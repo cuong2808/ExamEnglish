@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Writing Practice</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #243047;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2457a7;
+            margin-top: 0;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        .progress-card {
+            background: #edf4ff;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 28px;
+        }
+
+        .progress-track {
+            height: 9px;
+            background: #d4e1f5;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #3478db;
+            transition: width 0.25s;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-top: 32px;
+            color: #2457a7;
+        }
+
+        .description {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .question {
+            padding: 18px;
+            margin: 14px 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .question label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .words {
+            display: block;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: #3478db;
+            box-shadow: 0 0 0 3px #3478db20;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .correct {
+            border-color: #22a06b;
+            background: #f0fdf4;
+        }
+
+        .incorrect {
+            border-color: #ef4444;
+            background: #fff7f7;
+        }
+
+        .correct-text {
+            color: #16834c;
+        }
+
+        .incorrect-text {
+            color: #dc2626;
+        }
+
+        .answer {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            line-height: 1.5;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .secondary {
+            background: #e2e8f0;
+            color: #243047;
+        }
+
+        button:hover {
+            opacity: 0.88;
+        }
+
+        #result {
+            margin-top: 22px;
+            padding: 16px;
+            background: #edf4ff;
+            border-radius: 8px;
+            display: none;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>English Writing Practice</h1>
+        <p class="subtitle">Rearrange words and write meaningful sentences.</p>
+
+        <div class="progress-card">
+            <strong>Progress: <span id="completed">0</span>/40 completed</strong>
+            <div class="progress-track">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            <p id="score">Enter your answers to begin.</p>
+        </div>
+
+        <h2>VI. Writing</h2>
+
+        <h2>A. Put the words / phrases in the correct order</h2>
+        <p class="description">
+            Arrange the given words to make meaningful sentences.
+        </p>
+
+        <div id="sectionA"></div>
+
+        <h2>B. Use the given words / phrases to make meaningful sentences</h2>
+        <p class="description">
+            Use the given words to write complete sentences.
+            Remember to add the necessary words and punctuation.
+        </p>
+
+        <div id="sectionB"></div>
+
+        <div class="buttons">
+            <button class="primary" onclick="checkAnswers()">
+                Check answers
+            </button>
+
+            <button class="secondary" onclick="toggleAnswers()">
+                Show answers
+            </button>
+
+            <button class="secondary" onclick="resetQuiz()">
+                Try again
+            </button>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const questionsA = [
+            {
+                id: 1,
+                words: "an / company / engineering / for / He / works /.",
+                answer: "He works for an engineering company."
+            },
+            {
+                id: 2,
+                words: "doesn't / a / out / go / She / lot /.",
+                answer: "She doesn't go out a lot."
+            },
+            {
+                id: 3,
+                words: "studies / at / university / law / She /.",
+                answer: "She studies law at university."
+            },
+            {
+                id: 4,
+                words: "you / tired / morning / often / Are / in / the /?",
+                answer: "Are you often tired in the morning?"
+            },
+            {
+                id: 5,
+                words: "go / does / How / boat / the / often /?",
+                answer: "How often does the boat go?"
+            },
+            {
+                id: 6,
+                words: "apple / mother / for / My / an / breakfast / every / has / day /.",
+                answer: "My mother has an apple for breakfast every day."
+            },
+            {
+                id: 7,
+                words: "weekend / friends / at / with / shopping / I / the / often / my / go /.",
+                answer: "I often go shopping with my friends at the weekend."
+            },
+            {
+                id: 8,
+                words: "is / plate / Her / spaghetti / comfort / a / big / of / favourite / food /.",
+                answer: "Her favourite comfort food is a big plate of spaghetti."
+            },
+            {
+                id: 9,
+                words: "table / window / Can / a / near / the / we / have /?",
+                answer: "Can we have a table near the window?"
+            },
+            {
+                id: 10,
+                words: "every / big / have / Quebec / they / a / festival / winter / In /.",
+                answer: "In Quebec they have a big festival every winter."
+            },
+            {
+                id: 11,
+                words: "got / you / on / What / phone / have / apps / your /?",
+                answer: "What apps have you got on your phone?"
+            },
+            {
+                id: 12,
+                words: "like / I / chocolates, / usually / but / these / don't / like / I /.",
+                answer: "I usually like chocolates, but I don't like these."
+            },
+            {
+                id: 13,
+                words: "look / jeans / the / Can / at / window, / I / those / in / please /?",
+                answer: "Can I look at those jeans in the window, please?"
+            },
+            {
+                id: 14,
+                words: "view / park / There's / a / beautiful / the / over /.",
+                answer: "There's a beautiful view over the park."
+            },
+            {
+                id: 15,
+                words: "a / city / the / It's / short / perfect / break / for / in /.",
+                answer: "It's perfect for a short break in the city."
+            }
+        ];
+
+        const questionsB = [
+            {
+                id: 16,
+                words: "Makiko's / favourite / colour / purple.",
+                answer: "Makiko's favourite colour is purple."
+            },
+            {
+                id: 17,
+                words: "I / be / in / women's / football team.",
+                answer: "I am in the women's football team."
+            },
+            {
+                id: 18,
+                words: "Sam / live / small / village / his / parents.",
+                answer: "Sam lives in a small village with his parents."
+            },
+            {
+                id: 19,
+                words: "He / not have / car / at the moment.",
+                answer: "He doesn't have a car at the moment."
+            },
+            {
+                id: 20,
+                words: "Why / students / enjoy / her / classes?",
+                answer: "Why do students enjoy her classes?"
+            },
+            {
+                id: 21,
+                words: "My brother / teach / French / local school.",
+                answer: "My brother teaches French at a local school."
+            },
+            {
+                id: 22,
+                words: "I / would like / become / police officer.",
+                answer: "I would like to become a police officer."
+            },
+            {
+                id: 23,
+                words: "He / play / guitar / in / band.",
+                answer: "He plays the guitar in a band."
+            },
+            {
+                id: 24,
+                words: "she / finish work / late / evening?",
+                answer: "Does she finish work late in the evening?"
+            },
+            {
+                id: 25,
+                words: "My sister / be married / two kids.",
+                answer: "My sister is married and has two kids."
+            },
+            {
+                id: 26,
+                words: "What / your / favorite / type / restaurant /?",
+                answer: "What is your favorite type of restaurant?"
+            },
+            {
+                id: 27,
+                words: "you / go / bed / late / weekend /?",
+                answer: "Do you go to bed late at the weekend?"
+            },
+            {
+                id: 28,
+                words: "Mark / go / cinema / four / five / times / year /.",
+                answer: "Mark goes to the cinema four or five times a year."
+            },
+            {
+                id: 29,
+                words: "your town / have / food market /?",
+                answer: "Does your town have a food market?"
+            },
+            {
+                id: 30,
+                words: "Peter / often / spend / about four hours / day / online / work /.",
+                answer: "Peter often spends about four hours a day online for work."
+            },
+            {
+                id: 31,
+                words: "She / usually / not work / weekends.",
+                answer: "She doesn't usually work at weekends."
+            },
+            {
+                id: 32,
+                words: "They / not have / any lemons left / supermarket.",
+                answer: "They don't have any lemons left at the supermarket."
+            },
+            {
+                id: 33,
+                words: "What / you / would / like / drink?",
+                answer: "What would you like to drink?"
+            },
+            {
+                id: 34,
+                words: "She / like / travel / her friends / summer.",
+                answer: "She likes travelling with her friends in summer."
+            },
+            {
+                id: 35,
+                words: "he / love / swim / his free time?",
+                answer: "Does he love swimming in his free time?"
+            },
+            {
+                id: 36,
+                words: "Would you like / come / party / me / this evening /?",
+                answer: "Would you like to come to the party with me this evening?"
+            },
+            {
+                id: 37,
+                words: "We / live / apartment / city / our parents /.",
+                answer: "We live in an apartment in the city with our parents."
+            },
+            {
+                id: 38,
+                words: "There / not / mirrors / their bathroom /.",
+                answer: "There are no mirrors in their bathroom."
+            },
+            {
+                id: 39,
+                words: "There / be / table / in front / bookshelf / your bedroom /?",
+                answer: "Is there a table in front of the bookshelf in your bedroom?"
+            },
+            {
+                id: 40,
+                words: "My girlfriend / I / have got / tickets / concert / tonight /.",
+                answer: "My girlfriend and I have got tickets for the concert tonight."
+            }
+        ];
+
+        const allQuestions = [...questionsA, ...questionsB];
+
+        function renderQuestions(questions, containerId) {
+            const container = document.getElementById(containerId);
+
+            container.innerHTML = questions.map(q => `
+            <div class="question" id="question-${q.id}">
+                <label for="input-${q.id}">
+                    Question ${q.id}
+                </label>
+
+                <span class="words">${q.words}</span>
+
+                <input
+                    type="text"
+                    id="input-${q.id}"
+                    placeholder="Type your answer here..."
+                    autocomplete="off"
+                    oninput="updateProgress()"
+                >
+
+                <div class="feedback" id="feedback-${q.id}"></div>
+
+                <div class="answer" id="answer-${q.id}">
+                    <strong>Suggested answer:</strong>
+                    ${q.answer}
+                </div>
+            </div>
+        `).join("");
+        }
+
+        renderQuestions(questionsA, "sectionA");
+        renderQuestions(questionsB, "sectionB");
+
+        function normalize(text) {
+            return text
+                .toLowerCase()
+                .replace(/[’‘]/g, "'")
+                .replace(/[.,!?;:]/g, "")
+                .replace(/\s+/g, " ")
+                .trim();
+        }
+
+        function updateProgress() {
+            let completed = 0;
+
+            allQuestions.forEach(q => {
+                const value = document
+                    .getElementById(`input-${q.id}`)
+                    .value.trim();
+
+                if (value !== "") {
+                    completed++;
+                }
+            });
+
+            document.getElementById("completed").textContent = completed;
+
+            document.getElementById("progress").style.width =
+                `${completed / allQuestions.length * 100}%`;
+
+            document.getElementById("score").textContent =
+                `${completed} of ${allQuestions.length} questions answered.`;
+        }
+
+        function checkAnswers() {
+            let completed = 0;
+            let correct = 0;
+
+            allQuestions.forEach(q => {
+                const input = document.getElementById(`input-${q.id}`);
+                const card = document.getElementById(`question-${q.id}`);
+                const feedback = document.getElementById(`feedback-${q.id}`);
+
+                const userAnswer = input.value.trim();
+
+                card.classList.remove("correct", "incorrect");
+
+                if (!userAnswer) {
+                    feedback.textContent = "Please enter your answer.";
+                    feedback.className = "feedback";
+                    return;
+                }
+
+                completed++;
+
+                if (normalize(userAnswer) === normalize(q.answer)) {
+                    correct++;
+
+                    card.classList.add("correct");
+                    feedback.textContent = "✓ Correct!";
+                    feedback.className = "feedback correct-text";
+                } else {
+                    card.classList.add("incorrect");
+                    feedback.innerHTML =
+                        "✗ Not quite right. Check your grammar and word order.";
+                    feedback.className = "feedback incorrect-text";
+                }
+            });
+
+            const result = document.getElementById("result");
+            result.style.display = "block";
+
+            result.innerHTML = `
+            <strong>Your result</strong><br>
+            Correct answers: ${correct}/${allQuestions.length}<br>
+            Questions answered: ${completed}/${allQuestions.length}<br>
+            Score: ${(correct / allQuestions.length * 10).toFixed(1)}/10
+        `;
+
+            updateProgress();
+        }
+
+        let answersVisible = false;
+
+        function toggleAnswers() {
+            answersVisible = !answersVisible;
+
+            allQuestions.forEach(q => {
+                document.getElementById(`answer-${q.id}`).style.display =
+                    answersVisible ? "block" : "none";
+            });
+
+            document.querySelector(
+                'button[onclick="toggleAnswers()"]'
+            ).textContent = answersVisible ? "Hide answers" : "Show answers";
+        }
+
+        function resetQuiz() {
+            allQuestions.forEach(q => {
+                document.getElementById(`input-${q.id}`).value = "";
+
+                const card = document.getElementById(`question-${q.id}`);
+                card.classList.remove("correct", "incorrect");
+
+                document.getElementById(`feedback-${q.id}`).textContent = "";
+
+                document.getElementById(`answer-${q.id}`).style.display = "none";
+            });
+
+            answersVisible = false;
+
+            document.querySelector(
+                'button[onclick="toggleAnswers()"]'
+            ).textContent = "Show answers";
+
+            document.getElementById("result").style.display = "none";
+
+            updateProgress();
+
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    </script>
+</body>
+
+</html>
